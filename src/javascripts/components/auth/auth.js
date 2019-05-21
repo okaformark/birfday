@@ -2,7 +2,7 @@ import util from '../../helpers/util';
 
 const authDomStringBuilder = () => {
   let domString = '';
-  domString += 'auth';
+  domString += '<h5>auth</h5>';
   util.printToDom('auth', domString);
 };
 
