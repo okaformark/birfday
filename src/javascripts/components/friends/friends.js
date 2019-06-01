@@ -95,10 +95,7 @@ const getFriends = (uid) => {
     .then((friends) => {
       birfdayData.getBirfdayByUid(uid).then((bday) => {
         rsvpData.getRsvpsByBirthdayId(bday.id).then((rsvps) => {
-          console.error('friends array', friends);
-          console.error('rsvps array', rsvps);
           const finalFriends = SMASH.friendRsvps(friends, rsvps);
-          console.error(finalFriends);
           showFriends(finalFriends);
         });
       });
