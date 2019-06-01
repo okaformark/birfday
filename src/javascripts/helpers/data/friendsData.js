@@ -11,13 +11,15 @@ const getFriendsByUid = uid => new Promise((resolve, reject) => {
   axios.get(`${firebaseUrl}/friends.json?orderBy="uid"&equalTo="${uid}"`)
     .then((results) => {
       const friendResult = results.data;
-      console.error(friendResult);
+      // console.error(friendResult);
       const friends = [];
 
       // gets the key of the object "friend1"
       Object.keys(friendResult).forEach((friendId) => {
         friendResult[friendId].id = friendId;
-        console.error(friendResult[friendId]);
+        friendResult[friendId].rsvpId = '';
+        friendResult[friendId].statusId = 'status1';
+        // console.error(friendResult[friendId]);
         friends.push(friendResult[friendId]);
       });
       // console.error(friends);
