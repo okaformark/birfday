@@ -40,19 +40,42 @@ const deleteFriendsEvent = (e) => {
     .catch(err => console.error('no deletion', err));
 };
 
+const radioButtonEvent = (e) => {
+  const rsvpId = e.target.closest('td').id;
+  console.error(rsvpId);
+  const rsvp = {
+    birthdayId: e.target.closest('table').id,
+    friendId: e.target.id.split('.')[1],
+    statusId: e.target.value,
+  };
+  if (rsvpId) {
+    rsvpData.editRsvp(rsvpId, rsvp)
+      .then(() => getFriends(firebase.auth().currentUser.uid)) // eslint-disable-line no-use-before-define
+      .catch(err => console.error('no update', err));
+  } else {
+    rsvpData.addRsvp(rsvp)
+      .then(() => getFriends(firebase.auth().currentUser.uid)) // eslint-disable-line no-use-before-define
+      .catch(err => console.error('', err));
+  }
+};
+
 const addEvents = () => {
   document.getElementById('add-friend-button').addEventListener('click', newFriendButton);
   const deleteButtons = document.getElementsByClassName('delete-friend');
   for (let i = 0; i < deleteButtons.length; i += 1) {
     deleteButtons[i].addEventListener('click', deleteFriendsEvent);
   }
+  const radioButtons = document.getElementsByClassName('radio');
+  for (let j = 0; j < radioButtons.length; j += 1) {
+    radioButtons[j].addEventListener('click', radioButtonEvent);
+  }
 };
 
-const showFriends = (friends) => {
+const showFriends = (friends, birthdayId) => {
   let domString = '<div class="col-6 offset-3">';
   domString += '<h2>Friends</h2>';
   domString += '<button id="add-friend-button" class="btn btn-info">Add Friend</button>';
-  domString += '<table class="table table-striped"';
+  domString += `<table class="table table-striped" id = ${birthdayId}>`;
   domString += '<thead>';
   domString += '<tr>';
   domString += '<th scope="col">Name</th>';
@@ -67,17 +90,18 @@ const showFriends = (friends) => {
     domString += `<td>${friend.name}</td>`;
     domString += `<td>${friend.email}</td>`;
     domString += `<td id=${friend.rsvpId}>`;
+    console.error(friend);
     domString += '<div class="custom-control custom-radio custom-control-inline">';
-    domString += `<input type="radio" id="radio1_${friend.id}" name="radio-buttons_${friend.id}" class="custom-control-input"${friend.statusId === 'status2' ? 'checked' : ''}>`;
-    domString += `<label class="custom-control-label" for="radio1_${friend.id}">Yes</label>`;
+    domString += `<input type="radio" id="radio1.${friend.id}" name="radio-buttons_${friend.id}" class="custom-control-input radio" value="status2" ${friend.statusId === 'status2' ? 'checked' : ''}>`;
+    domString += `<label class="custom-control-label" for="radio1.${friend.id}">Yes</label>`;
     domString += '</div>';
     domString += '<div class="custom-control custom-radio custom-control-inline">';
-    domString += `<input type="radio" id="radio2_${friend.id}" name="radio-buttons_${friend.id}" class="custom-control-input" ${friend.statusId === 'status3' ? 'checked' : ''}>`;
-    domString += `<label class="custom-control-label" for="radio2_${friend.id}">No</label>`;
+    domString += `<input type="radio" id="radio2.${friend.id}" name="radio-buttons_${friend.id}" class="custom-control-input radio" value="status3" ${friend.statusId === 'status3' ? 'checked' : ''}>`;
+    domString += `<label class="custom-control-label" for="radio2.${friend.id}">No</label>`;
     domString += '</div>';
     domString += '<div class="custom-control custom-radio custom-control-inline">';
-    domString += `<input type="radio" id="radio3_${friend.id}" name="radio-buttons_${friend.id}" class="custom-control-input" ${friend.statusId === 'status1' ? 'checked' : ''}>`;
-    domString += `<label class="custom-control-label" for="radio3_${friend.id}">Unknown</label>`;
+    domString += `<input type="radio" id="radio3.${friend.id}" name="radio-buttons_${friend.id}" class="custom-control-input radio" value="status1" ${friend.statusId === 'status1' ? 'checked' : ''}>`;
+    domString += `<label class="custom-control-label" for="radio3.${friend.id}">Unknown</label>`;
     domString += '</div>';
     domString += '</td>';
     domString += `<th scope="col"><button id=${friend.id} class="btn btn-danger delete-friend">X</button></th>`;
@@ -95,8 +119,9 @@ const getFriends = (uid) => {
     .then((friends) => {
       birfdayData.getBirfdayByUid(uid).then((bday) => {
         rsvpData.getRsvpsByBirthdayId(bday.id).then((rsvps) => {
+          console.error(rsvps);
           const finalFriends = SMASH.friendRsvps(friends, rsvps);
-          showFriends(finalFriends);
+          showFriends(finalFriends, bday.id);
         });
       });
     })
