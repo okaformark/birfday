@@ -3,9 +3,7 @@ import util from '../../helpers/util';
 
 
 const birfdayDomStringBuilder = (uid) => {
-  // console.error(uid);
   birfdayData.getBirfdayByUid(uid).then((birthdayResp) => {
-    // console.error(birthdayResp);
     let domString = '';
     domString += `<h1>${birthdayResp.date}</h1>`;
     domString += `<img src=${birthdayResp.imageUrl} alt="birthday location"/>`;
