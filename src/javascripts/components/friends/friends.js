@@ -42,7 +42,6 @@ const deleteFriendsEvent = (e) => {
 
 const radioButtonEvent = (e) => {
   const rsvpId = e.target.closest('td').id;
-  console.error(rsvpId);
   const rsvp = {
     birthdayId: e.target.closest('table').id,
     friendId: e.target.id.split('.')[1],
@@ -90,7 +89,6 @@ const showFriends = (friends, birthdayId) => {
     domString += `<td>${friend.name}</td>`;
     domString += `<td>${friend.email}</td>`;
     domString += `<td id=${friend.rsvpId}>`;
-    console.error(friend);
     domString += '<div class="custom-control custom-radio custom-control-inline">';
     domString += `<input type="radio" id="radio1.${friend.id}" name="radio-buttons_${friend.id}" class="custom-control-input radio" value="status2" ${friend.statusId === 'status2' ? 'checked' : ''}>`;
     domString += `<label class="custom-control-label" for="radio1.${friend.id}">Yes</label>`;
@@ -119,7 +117,6 @@ const getFriends = (uid) => {
     .then((friends) => {
       birfdayData.getBirfdayByUid(uid).then((bday) => {
         rsvpData.getRsvpsByBirthdayId(bday.id).then((rsvps) => {
-          console.error(rsvps);
           const finalFriends = SMASH.friendRsvps(friends, rsvps);
           showFriends(finalFriends, bday.id);
         });
